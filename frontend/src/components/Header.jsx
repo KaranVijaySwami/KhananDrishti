@@ -89,8 +89,8 @@ export const Header = ({
   { id: "statutory_registers", label: "Statutory Registers", icon: FileText },
   { id: "ai_sentinel", label: "AI Sentinel & OCR", icon: Bot, isNew: true },
   { id: "contractor_labour", label: "Contractor & Form-B", icon: Users },
-  { id: "workflow_audit", label: "CAPA & Audit Trail", icon: GitCommit },
-  { id: "backend_guide", label: "System Architecture", icon: Server }];
+  { id: "workflow_audit", label: "CAPA & Audit Trail", icon: GitCommit }]
+  
 
   const navTabs = currentRole === "safety_officer" 
     ? allNavTabs.filter(tab => ["gis_map", "field_inspection"].includes(tab.id))
