@@ -22,9 +22,7 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
 
-app.get("/", (req, res) => {
-  res.send("ROOT ROUTE FROM NEW DEPLOYMENT WORKS");
-});
+
 
 
 app.use("/api", apiRoutes);
