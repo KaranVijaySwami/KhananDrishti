@@ -12,14 +12,16 @@ const sendTokenResponse = (user, statusCode, res) => {
     { expiresIn: "30d" }
   );
 
-  const options = {
-    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-    httpOnly: true,
-  };
+const options = {
+  expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  httpOnly: true,
+};
 
-  if (process.env.NODE_ENV === "production") {
-    options.secure = true;
-  }
+if (process.env.NODE_ENV === "production") {
+  options.secure = true;
+  options.sameSite = "none";
+}
+ 
 
   // Remove password from output
   const userData = user.toObject();
