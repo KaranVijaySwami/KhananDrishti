@@ -8,6 +8,8 @@ import apiRoutes from "./routes/index.js";
 
 const app = express();
 
+app.set("trust proxy", 1);//for accepting proxy server
+
 app.use(morgan("dev"));
 
 app.use(
