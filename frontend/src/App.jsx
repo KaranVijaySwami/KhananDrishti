@@ -1,11 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-
-
-
-
-
-
+import React, { useState, useEffect, useContext } from "react";
 
 import {
   MINE_SITES,
@@ -22,10 +15,12 @@ import { StatutoryRegisters } from "./components/StatutoryRegisters";
 import { AiSentinelOcr } from "./components/AiSentinelOcr";
 import { ContractorPortal } from "./components/ContractorPortal";
 import { WorkflowAuditTrail } from "./components/WorkflowAuditTrail";
+import { InspectorDashboard } from "./components/InspectorDashboard";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
 
-export const App = () => {
-  // Authentication State: null means user is on dedicated Login Page
-  const [currentUser, setCurrentUser] = useState(null);
+const MainApp = () => {
+  const { user: currentUser, isAuthenticated, loading, logout } = useContext(AuthContext);
+
   const [currentRole, setCurrentRole] = useState("mine_official");
   const [selectedSubsidiary, setSelectedSubsidiary] = useState("ALL");
   const [mines, setMines] = useState(MINE_SITES);
@@ -58,42 +53,76 @@ export const App = () => {
     };
   }, []);
 
-  const handleLogin = (user) => {
-    setCurrentUser(user);
-    setCurrentRole(user.role);
-    if (user.subsidiary && user.subsidiary !== "CIL_HQ") {
-      setSelectedSubsidiary(user.subsidiary);
-      const match = mines.find((m) => m.subsidiary === user.subsidiary);
-      if (match) setSelectedMine(match);
+  // Update local state when authenticated user changes
+  useEffect(() => {
+    if (currentUser) {
+      setCurrentRole(currentUser.role);
+      if (currentUser.subsidiary && currentUser.subsidiary !== "CIL_HQ") {
+        setSelectedSubsidiary(currentUser.subsidiary);
+        const match = mines.find((m) => m.subsidiary === currentUser.subsidiary);
+        if (match) setSelectedMine(match);
+      }
+      // Set appropriate initial tab based on role
+      if (currentUser.role === "safety_officer") {
+        setActiveTab("field_inspection");
+      } else if (currentUser.role === "contractor_supervisor") {
+        setActiveTab("contractor_labour");
+      } else {
+        setActiveTab("command_hub");
+      }
     }
-    // Set appropriate initial tab based on role
-    if (user.role === "safety_officer") {
-      setActiveTab("field_inspection");
-    } else if (user.role === "contractor_supervisor") {
-      setActiveTab("contractor_labour");
-    } else {
-      setActiveTab("command_hub");
-    }
-  };
+  }, [currentUser, mines]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    setCurrentUser(null);
+  const handleLogout = async () => {
+    await logout();
   };
 
   const handleSwitchUser = (user) => {
-    setCurrentUser(user);
-    setCurrentRole(user.role);
-    if (user.subsidiary && user.subsidiary !== "CIL_HQ") {
-      setSelectedSubsidiary(user.subsidiary);
-      const match = mines.find((m) => m.subsidiary === user.subsidiary);
-      if (match) setSelectedMine(match);
+    // This function was likely for mock development.
+    // Switching user in a real app would require logging out and logging in again.
+    // For now, we'll just log out.
+    handleLogout();
+  };
+
+  const fetchInspections = async () => {
+    try {
+      const endpoint = currentUser?.role === "safety_officer" ? "/api/inspections/mine" : "/api/inspections";
+      const res = await fetch(endpoint, { credentials: 'include' });
+      const data = await res.json();
+      if (data.success) {
+        setInspections(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching inspections:", error);
     }
   };
 
-  const handleAddInspection = (newRecord) => {
-    setInspections((prev) => [newRecord, ...prev]);
-    if (!isOnline) {
+  useEffect(() => {
+    if (isAuthenticated && currentUser) {
+      fetchInspections();
+    }
+  }, [isAuthenticated, currentUser]);
+
+  const handleAddInspection = async (newRecord) => {
+    if (isOnline) {
+      try {
+        const res = await fetch("/api/inspections", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+          body: JSON.stringify(newRecord),
+        });
+        const data = await res.json();
+        if (data.success) {
+          setInspections((prev) => [data.data, ...prev]);
+        }
+      } catch (error) {
+        console.error("Error creating inspection:", error);
+        setOfflineQueueCount((c) => c + 1);
+      }
+    } else {
       setOfflineQueueCount((c) => c + 1);
     }
   };
@@ -102,9 +131,59 @@ export const App = () => {
     setActiveTab("ai_sentinel");
   };
 
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">Loading...</div>;
+  }
+
   // If no user is authenticated, render the dedicated Role-Based Login Page
-  if (!currentUser) {
-    return <LoginPage onLogin={handleLogin} />;
+  if (!isAuthenticated || !currentUser) {
+    return <LoginPage />;
+  }
+
+  if (currentUser.role === "safety_officer") {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans selection:bg-[#FF4D00] selection:text-white">
+        <Header
+          currentUser={currentUser}
+          onLogout={handleLogout}
+          onSwitchUser={handleSwitchUser}
+          currentRole={currentRole}
+          setRole={setCurrentRole}
+          selectedSubsidiary={selectedSubsidiary}
+          setSubsidiary={(sub) => {}}
+          selectedMine={selectedMine}
+          setSelectedMineId={(id) => {}}
+          allMines={mines}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isOnline={isOnline}
+          setIsOnline={setIsOnline}
+          offlineQueueCount={offlineQueueCount} />
+        
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {activeTab === "gis_map" ? (
+            <GisMineMap
+              selectedMine={selectedMine}
+              violations={violations}
+              inspections={inspections}
+              onInspectViolation={handleInspectViolation} />
+          ) : (
+            <InspectorDashboard
+              selectedMine={selectedMine}
+              isOnline={isOnline}
+              offlineQueueCount={offlineQueueCount}
+              inspections={inspections}
+              onAddInspection={handleAddInspection}
+            />
+          )}
+        </main>
+        
+        <footer className="h-10 bg-white border-t border-slate-200 flex items-center px-4 sm:px-8 justify-between text-[10px] text-slate-500 uppercase tracking-[0.2em] font-medium">
+          <span>Integrated Smart Governance Framework • Ministry of Coal / DGMS / CIL</span>
+          <span className="font-mono text-slate-500 hidden sm:inline">SHA-256 CRYPTOGRAPHIC AUDIT LOGS ACTIVE</span>
+        </footer>
+      </div>
+    );
   }
 
   return (
@@ -234,6 +313,14 @@ export const App = () => {
       </footer>
     </div>);
 
+};
+
+export const App = () => {
+  return (
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
+  );
 };
 
 export default App;

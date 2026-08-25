@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-
-
+import React, { useState, useContext, useEffect } from "react";
 import { Shield, KeyRound, Lock, LogIn, AlertTriangle, Cpu } from "lucide-react";
-
-
-
-
+import { AuthContext } from "../context/AuthContext";
 
 const generateCaptcha = () => {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -16,7 +11,9 @@ const generateCaptcha = () => {
   return result;
 };
 
-export const LoginPage = ({ onLogin }) => {
+export const LoginPage = () => {
+  const { login, error: contextError } = useContext(AuthContext);
+  
   const [loginRole, setLoginRole] = useState("mine_official");
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +23,13 @@ export const LoginPage = ({ onLogin }) => {
   const [captchaCode, setCaptchaCode] = useState(generateCaptcha());
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  // Sync context error to local error state
+  useEffect(() => {
+    if (contextError) {
+      setErrorMessage(contextError);
+    }
+  }, [contextError]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -48,37 +52,15 @@ export const LoginPage = ({ onLogin }) => {
 
     setIsLoading(true);
 
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          employeeCode: loginId,
-          password: password,
-          role: loginRole,
-          subsidiary: subsidiary
-        })
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Authentication failed");
-      }
-
-      // Store token
-      localStorage.setItem("authToken", result.token);
-
-      setIsLoading(false);
-      onLogin(result.data); // The backend will return a hydrated user session object
-
-    } catch (err) {
-      setIsLoading(false);
-      setErrorMessage(err.message || "Failed to connect to the authentication server.");
+    const success = await login(loginId, password, subsidiary, loginRole);
+    
+    if (!success) {
       setCaptchaCode(generateCaptcha()); // Regenerate captcha on failed auth
       setCaptchaInput("");
       setPassword(""); // Clear password for security
     }
+
+    setIsLoading(false);
   };
 
   return (

@@ -1,32 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 import {
   HardHat,
-
   Camera,
   CheckCircle2,
-
-
-
   FileCheck,
-
   Wifi,
   WifiOff,
-
-
   Send,
   RefreshCw,
-
-  Crosshair } from
-"lucide-react";
-
-
-
-
-
-
-
-
+  Crosshair } from "lucide-react";
 
 export const FieldInspection = ({
   selectedMine,
@@ -35,6 +19,7 @@ export const FieldInspection = ({
   onAddInspection,
   inspections
 }) => {
+  const { user } = useContext(AuthContext);
   const [gpsLocked, setGpsLocked] = useState(true);
   const [currentCoords, setCurrentCoords] = useState({
     lat: selectedMine.lat + (Math.random() * 0.004 - 0.002),
@@ -43,8 +28,8 @@ export const FieldInspection = ({
     altitudeRL: 214.5
   });
 
-  const [inspectorName, setInspectorName] = useState("Er. Rajesh Verma");
-  const [designation, setDesignation] = useState("Colliery Safety Officer (1st Class Mine Manager)");
+  const [inspectorName, setInspectorName] = useState(user?.name || "Er. Rajesh Verma");
+  const [designation, setDesignation] = useState(user?.role === "safety_officer" ? "Safety Officer" : "Colliery Safety Officer (1st Class Mine Manager)");
   const [inspectionType, setInspectionType] = useState("DGMS_Statutory");
   const [benchOrLevel, setBenchOrLevel] = useState("South-East Bench 12 (RL 210m)");
   const [seamName, setSeamName] = useState("Seam IV/V Interburden");
@@ -64,40 +49,64 @@ export const FieldInspection = ({
 
     [
     {
-      checkPoint: "Haul Road Gradient maintains <= 1 in 16 ratio on active ramp",
-      statutoryRef: "CMR 2017 Reg 107(1)",
+      checkPoint: "Commencement of the provisions of Jan Vishwas (Amendment of Provisions) Act, 2026 relating to the Coal Mines (Special Provisions) Act, 2015",
+      statutoryRef: "Jan Vishwas Act 2026 • CMSP Act 2015",
       status: "Pass",
-      remarks: "Gradient verified via digital inclinometer at 1 in 16.2."
+      remarks: ""
     },
     {
-      checkPoint: "Safety Berm / Parapet wall height >= largest tyre diameter (3.5m)",
-      statutoryRef: "CMR 2017 Reg 107(3)",
+      checkPoint: "Mineral Concession (Amendment) Rules, 2022 — compliance with amended concession grant procedures",
+      statutoryRef: "Mineral Concession (Amendment) Rules, 2022",
       status: "Pass",
-      remarks: "Continuous compacted rock berm of 3.8m measured along pit edge."
+      remarks: ""
     },
     {
-      checkPoint: "Highwall and OB dump slope stability radar monitoring active",
-      statutoryRef: "DGMS Tech Circular (Safety) 04/2020",
+      checkPoint: "Mineral Laws (Amendment) Ordinance, 2020 — composite licence and production requirements met",
+      statutoryRef: "Mineral Laws (Amendment) Ordinance, 2020",
       status: "Pass",
-      remarks: "Real-time radar ping active; displacement below 0.2mm/hr."
+      remarks: ""
     },
     {
-      checkPoint: "Auto Fire Detection & Suppression (AFDSS) in Heavy HEMM",
-      statutoryRef: "DGMS Standard for Heavy Earthmoving Machinery",
+      checkPoint: "The Coal Mines Provident Fund and Miscellaneous Provisions Act, 1948 — PF deductions and deposits verified for all mine workers",
+      statutoryRef: "Coal Mines PF & Misc. Provisions Act, 1948",
       status: "Pass",
-      remarks: "Nitrogen pressure indicator in green band on Shovel #04."
+      remarks: ""
     },
     {
-      checkPoint: "Dust Suppression Mist Cannons & Mobile Sprinklers Operating",
-      statutoryRef: "MoEFCC EC Condition Specific-IV",
-      status: "Observation",
-      remarks: "Ramp 2 sprinkler truck scheduled next round in 20 minutes."
+      checkPoint: "The Coal Grading Board (Repeal) Act, 1959 — coal grading standards and quality declarations are current",
+      statutoryRef: "Coal Grading Board (Repeal) Act, 1959",
+      status: "Pass",
+      remarks: ""
     },
     {
-      checkPoint: "First Aid Station & Emergency Stretcher with Oxygen kit available",
-      statutoryRef: "Mines Rules 1955 Rule 44",
+      checkPoint: "The Coal India (Regulation of Transfers and Validation) Act, 2000 — transfer protocols and ownership validation records in order",
+      statutoryRef: "Coal India (Regulation of Transfers & Validation) Act, 2000",
       status: "Pass",
-      remarks: "Fully stocked at Bench 12 substation."
+      remarks: ""
+    },
+    {
+      checkPoint: "The Coal Mines (Special Provisions) Act, 2015 — auction/allotment conditions, end-use compliance and operational benchmarks met",
+      statutoryRef: "Coal Mines (Special Provisions) Act, 2015",
+      status: "Pass",
+      remarks: ""
+    },
+    {
+      checkPoint: "Gazette Notification on the Colliery Control (Amendment) Rules, 2025 — updated colliery control norms implemented",
+      statutoryRef: "Colliery Control (Amendment) Rules, 2025",
+      status: "Pass",
+      remarks: ""
+    },
+    {
+      checkPoint: "Amendment in Land Use Policy of Central Public Sector Undertakings in Coal Sectors — land use change approvals and compliance verified",
+      statutoryRef: "CPSU Land Use Policy Amendment",
+      status: "Pass",
+      remarks: ""
+    },
+    {
+      checkPoint: "Coal Blocks Allocation Rules, 2017 — allocation conditions, production timelines and milestone compliance verified",
+      statutoryRef: "Coal Blocks Allocation Rules, 2017",
+      status: "Pass",
+      remarks: ""
     }]
   );
 
@@ -280,9 +289,9 @@ export const FieldInspection = ({
                 <input
                   type="text"
                   required
+                  readOnly
                   value={inspectorName}
-                  onChange={(e) => setInspectorName(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]" />
+                  className="w-full bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-slate-600 font-mono text-xs focus:outline-none" />
                 
               </div>
 
@@ -293,9 +302,9 @@ export const FieldInspection = ({
                 <input
                   type="text"
                   required
+                  readOnly
                   value={designation}
-                  onChange={(e) => setDesignation(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]" />
+                  className="w-full bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-slate-600 font-mono text-xs focus:outline-none" />
                 
               </div>
             </div>
@@ -444,17 +453,35 @@ export const FieldInspection = ({
                   <p className="text-[10px] text-slate-500">
                     EXIF Metadata: {currentCoords.lat.toFixed(5)}° N, {currentCoords.lng.toFixed(5)}° E • {new Date().toLocaleDateString()}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEvidencePhoto(
-                        "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?w=600&auto=format&fit=crop&q=60"
-                      );
-                    }}
-                    className="text-[#E64A19] hover:underline text-[10px] font-bold">
-                    
-                    Simulate Capturing New Bench Photo
-                  </button>
+                  
+                  <div className="pt-2">
+                    <label className="cursor-pointer bg-[#FF4D00] hover:bg-[#e04400] text-white px-3 py-1.5 rounded text-[10px] font-bold transition-colors inline-block text-center">
+                      Capture / Upload Geo-Tagged Photo
+                      <input
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setEvidencePhoto(reader.result);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setEvidencePhoto(null)}
+                      className="ml-2 text-slate-500 hover:text-red-500 text-[10px] font-bold underline"
+                    >
+                      Clear Photo
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -497,11 +524,11 @@ export const FieldInspection = ({
             <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
               {inspections.map((insp) =>
               <div
-                key={insp.id}
+                key={insp.inspectionId || insp.id || insp._id}
                 className="p-3.5 bg-white border border-slate-200 rounded-lg hover:border-slate-300 transition-all text-xs space-y-2 shadow-2xs">
                 
                   <div className="flex items-center justify-between font-mono">
-                    <span className="font-bold text-[#E64A19]">{insp.id}</span>
+                    <span className="font-bold text-[#E64A19]">{insp.inspectionId || insp.id}</span>
                     <span
                     className={`px-2 py-0.5 rounded text-[9px] uppercase font-bold border ${
                     (insp.overallVerdict || (insp.checklistSummary?.failed > 0 ? "Non_Compliant_Notice" : "Compliant")) === "Compliant" ?

@@ -82,7 +82,7 @@ export const Header = ({
     }
   };
 
-  const navTabs = [
+  const allNavTabs = [
   { id: "command_hub", label: "Central Command", icon: Layers },
   { id: "gis_map", label: "GIS Spatial Map", icon: MapPin },
   { id: "field_inspection", label: "Field Inspection", icon: HardHat, badge: offlineQueueCount > 0 ? `${offlineQueueCount}` : undefined },
@@ -91,6 +91,10 @@ export const Header = ({
   { id: "contractor_labour", label: "Contractor & Form-B", icon: Users },
   { id: "workflow_audit", label: "CAPA & Audit Trail", icon: GitCommit },
   { id: "backend_guide", label: "System Architecture", icon: Server }];
+
+  const navTabs = currentRole === "safety_officer" 
+    ? allNavTabs.filter(tab => ["gis_map", "field_inspection"].includes(tab.id))
+    : allNavTabs;
 
 
   return (
@@ -263,44 +267,7 @@ export const Header = ({
                     </div>
                   </div>
 
-                  {/* Switch Role Quick Links */}
-                  <div>
-                    <span className="text-[10px] font-mono uppercase text-slate-500 tracking-wider block mb-2 font-bold">
-                      Switch Mining Role Persona:
-                    </span>
-                    <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                      {MOCK_USER_PERSONAS.map((persona) => {
-                      const isCurrent = persona.user.id === currentUser.id;
-                      return (
-                        <button
-                          key={persona.user.id}
-                          onClick={() => {
-                            onSwitchUser(persona.user);
-                            setRole(persona.user.role);
-                            setShowUserMenu(false);
-                          }}
-                          className={`w-full text-left p-2 rounded-lg flex items-center justify-between text-xs transition-colors cursor-pointer ${
-                          isCurrent ?
-                          "bg-orange-50 border border-[#FF4D00] text-slate-900 font-medium" :
-                          "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200"}`
-                          }>
-                          
-                            <div>
-                              <div className="font-medium font-serif leading-tight text-slate-900">
-                                {persona.user.name}
-                              </div>
-                              <div className="text-[10px] font-mono text-slate-500">
-                                {persona.user.role.replace("_", " ").toUpperCase()} • {persona.user.employeeCode}
-                              </div>
-                            </div>
-                            {isCurrent &&
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#FF4D00]" />
-                          }
-                          </button>);
-
-                    })}
-                    </div>
-                  </div>
+                  {/* Removed mock persona switcher */}
 
                   {/* Logout Button */}
                   <div className="pt-2 border-t border-slate-100">

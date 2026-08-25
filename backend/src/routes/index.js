@@ -1,9 +1,10 @@
 import express from "express";
 import authRoutes from "./authRoutes.js";
+import inspectionRoutes from "./inspectionRoutes.js";
 
 const router = express.Router();
 
 router.use("/auth", authRoutes);
-// We can mount other routes here as they get built out.
+router.use("/inspections", inspectionRoutes);
 
 export default router;
