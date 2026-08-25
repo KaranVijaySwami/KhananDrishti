@@ -17,7 +17,7 @@ export default defineConfig(() => {
       // Proxy API calls to the Node.js backend
       proxy: {
         '/api': {
-          target: 'http://localhost:5000',
+          target: 'http://localhost:5001',
           changeOrigin: true
         }
       }
