@@ -9,18 +9,48 @@ import apiRoutes from "./routes/index.js";
 const app = express();
 
 app.use(morgan("dev"));
-app.use(cors({ origin: config.corsOrigin, credentials: true }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+app.use(
+  cors({
+    origin: config.corsOrigin,
+    credentials: true,
+  })
+);
+
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "KhananDrishti Backend is running!",
+    status: "ok",
+  });
+});
+
 
 app.use("/api", apiRoutes);
 
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-app.listen(config.port, async () => {
-  await connectDB();
-  console.log(`🚀 KhananDrishti Backend running on port ${config.port}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(config.port,"0.0.0.0", () => {
+      console.log(
+        `🚀 KhananDrishti Backend running on port ${config.port}`
+      );
+    });
+  } catch (error) {
+    console.error("❌ Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
