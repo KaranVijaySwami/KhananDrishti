@@ -18,6 +18,9 @@ import { WorkflowAuditTrail } from "./components/WorkflowAuditTrail";
 import { InspectorDashboard } from "./components/InspectorDashboard";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 
+// Explicitly define your Render backend URL here
+const BACKEND_URL = "https://khanandrishti-backend.onrender.com";
+
 const MainApp = () => {
   const { user: currentUser, isAuthenticated, loading, logout } = useContext(AuthContext);
 
@@ -78,15 +81,16 @@ const MainApp = () => {
   };
 
   const handleSwitchUser = (user) => {
-    // This function was likely for mock development.
-    // Switching user in a real app would require logging out and logging in again.
-    // For now, we'll just log out.
     handleLogout();
   };
 
   const fetchInspections = async () => {
     try {
-      const endpoint = currentUser?.role === "safety_officer" ? "/api/inspections/mine" : "/api/inspections";
+      // Attached BACKEND_URL to fix the 404 issue
+      const endpoint = currentUser?.role === "safety_officer" 
+        ? `${BACKEND_URL}/api/inspections/mine` 
+        : `${BACKEND_URL}/api/inspections`;
+        
       const res = await fetch(endpoint, { credentials: 'include' });
       const data = await res.json();
       if (data.success) {
@@ -106,7 +110,8 @@ const MainApp = () => {
   const handleAddInspection = async (newRecord) => {
     if (isOnline) {
       try {
-        const res = await fetch("/api/inspections", {
+        // Attached BACKEND_URL here as well
+        const res = await fetch(`${BACKEND_URL}/api/inspections`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -229,7 +234,6 @@ const MainApp = () => {
             if (m) setSelectedMine(m);
           }}
           onNavigateTab={setActiveTab} />
-
         }
 
         {(activeTab === "gis_map" || activeTab === "gis") &&
@@ -238,7 +242,6 @@ const MainApp = () => {
           violations={violations}
           inspections={inspections}
           onInspectViolation={handleInspectViolation} />
-
         }
 
         {activeTab === "field_inspection" &&
@@ -248,7 +251,6 @@ const MainApp = () => {
           offlineQueueCount={offlineQueueCount}
           onAddInspection={handleAddInspection}
           inspections={inspections} />
-
         }
 
         {(activeTab === "statutory_registers" || activeTab === "registers") &&
@@ -259,7 +261,6 @@ const MainApp = () => {
         <AiSentinelOcr
           selectedMine={selectedMine}
           violations={violations} />
-
         }
 
         {(activeTab === "contractor_labour" || activeTab === "contractors") &&
@@ -312,7 +313,6 @@ const MainApp = () => {
         <span className="font-mono text-slate-500 hidden sm:inline">SHA-256 CRYPTOGRAPHIC AUDIT LOGS ACTIVE</span>
       </footer>
     </div>);
-
 };
 
 export const App = () => {
