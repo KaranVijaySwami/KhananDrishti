@@ -94,7 +94,7 @@ KhananDrishti/
 ### Prerequisites
 
 - **Node.js** v18+
-- **MongoDB** running locally on port `27017`
+- **MongoDB Atlas** cluster (with Network Access IP whitelisted)
 
 ### 1. Clone & install
 
@@ -119,7 +119,7 @@ Fill in your values:
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/khanandrishti
+MONGODB_URI=mongodb+srv://<USERNAME>:<PASSWORD>@cluster0.xxxxx.mongodb.net/KhananDrishti?retryWrites=true&w=majority&appName=Cluster0&family=4
 JWT_SECRET=your_strong_secret_here
 GEMINI_API_KEY=your_gemini_api_key_here
 CORS_ORIGIN=http://localhost:5173
@@ -128,11 +128,8 @@ CORS_ORIGIN=http://localhost:5173
 ### 3. Seed the database
 
 ```bash
-# Seed general data (admin users, mines)
-npm run seed --prefix backend
-
-# Seed 4 field inspector accounts
-node backend/src/scripts/seedInspectors.js
+# Run the master seed script to populate users, mines, violations, contractors, and workers
+node backend/src/scripts/seedAll.js
 ```
 
 ### 4. Start development servers
