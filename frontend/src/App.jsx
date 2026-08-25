@@ -86,7 +86,6 @@ const MainApp = () => {
 
   const fetchInspections = async () => {
     try {
-      // Attached BACKEND_URL to fix the 404 issue
       const endpoint = currentUser?.role === "safety_officer" 
         ? `${BACKEND_URL}/api/inspections/mine` 
         : `${BACKEND_URL}/api/inspections`;
@@ -110,7 +109,6 @@ const MainApp = () => {
   const handleAddInspection = async (newRecord) => {
     if (isOnline) {
       try {
-        // Attached BACKEND_URL here as well
         const res = await fetch(`${BACKEND_URL}/api/inspections`, {
           method: "POST",
           headers: {
@@ -269,41 +267,6 @@ const MainApp = () => {
 
         {(activeTab === "workflow_audit" || activeTab === "audit_trail") &&
         <WorkflowAuditTrail violations={violations} />
-        }
-
-        {activeTab === "backend_guide" &&
-        <div className="bg-white border border-slate-200 rounded-xl p-8 space-y-6 shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-              <div>
-                <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-slate-500">Infrastructure Specs</span>
-                <h2 className="font-serif italic text-3xl mt-1 text-slate-900">Full-Stack Backend Architecture</h2>
-              </div>
-              <span className="px-3 py-1 bg-slate-100 border border-slate-200 text-[10px] uppercase font-mono text-emerald-700 font-bold rounded">
-                Node.js • Express • Gemini AI
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 bg-slate-50 border-l-4 border-[#FF4D00] rounded-r-xl space-y-3 border border-slate-200">
-                <p className="text-[10px] text-[#FF4D00] uppercase font-bold tracking-widest">Active API Endpoints</p>
-                <h3 className="font-serif italic text-xl text-slate-900">Statutory AI Services</h3>
-                <ul className="space-y-2 text-xs text-slate-600 font-mono">
-                  <li><strong className="text-slate-900">POST /api/ai/ocr-doc</strong> - DGMS Notice OCR & Citation Extractor</li>
-                  <li><strong className="text-slate-900">POST /api/ai/analyze-risk</strong> - Slope radar & gas predictive index</li>
-                  <li><strong className="text-slate-900">POST /api/ai/generate-atr</strong> - Formal legal Action Taken Report drafting</li>
-                  <li><strong className="text-slate-900">POST /api/ai/chat-copilot</strong> - CMR 2017 & Mines Act statutory advisor</li>
-                </ul>
-              </div>
-
-              <div className="p-6 bg-slate-50 border-l-4 border-emerald-500 rounded-r-xl space-y-3 border border-slate-200">
-                <p className="text-[10px] text-emerald-700 uppercase font-bold tracking-widest">Data Synchronization</p>
-                <h3 className="font-serif italic text-xl text-slate-900">Offline First Field Pipeline</h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Field observations captured deep inside opencast quarry benches or underground galleries are stored in encrypted client-side storage with SHA-256 digital signatures, auto-syncing upon network restoration.
-                </p>
-              </div>
-            </div>
-          </div>
         }
       </main>
 
