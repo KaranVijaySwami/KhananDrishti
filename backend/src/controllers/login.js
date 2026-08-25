@@ -3,7 +3,7 @@ import { User } from "../models/User";
 
 
 import jwt from "jsonwebtoken";
-i
+
 
 export const login = async (req, res) => {
     try {
