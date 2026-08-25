@@ -2,6 +2,8 @@ import React, { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,10 +13,12 @@ export const AuthProvider = ({ children }) => {
   // Check if user is logged in
   const checkLoggedIn = async () => {
     try {
-      const res = await fetch('/api/auth/me', {
-        credentials: 'include'
+      const res = await fetch(`${API_URL}/auth/me`, {
+        credentials: 'include',
       });
+
       const data = await res.json();
+
       if (data.success) {
         setUser(data.data);
         setIsAuthenticated(true);
@@ -37,17 +41,22 @@ export const AuthProvider = ({ children }) => {
   // Login User
   const login = async (employeeCode, password, subsidiary, role) => {
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ employeeCode, password, subsidiary, role }),
+        body: JSON.stringify({
+          employeeCode,
+          password,
+          subsidiary,
+          role,
+        }),
       });
 
       const data = await res.json();
-      
+
       if (data.success) {
         setUser(data.data);
         setIsAuthenticated(true);
@@ -66,7 +75,10 @@ export const AuthProvider = ({ children }) => {
   // Logout
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', { credentials: 'include' });
+      await fetch(`${API_URL}/auth/logout`, {
+        credentials: 'include',
+      });
+
       setUser(null);
       setIsAuthenticated(false);
     } catch (err) {
