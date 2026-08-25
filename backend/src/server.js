@@ -22,7 +22,7 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
 
-
+app.get("/", (req, res) => { res.json({ message: "KhananDrishti Backend is running!", status: "ok", }); });
 
 
 app.use("/api", apiRoutes);
