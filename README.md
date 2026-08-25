@@ -153,7 +153,7 @@ This launches:
 
 | Role | Employee Code | Password | Subsidiary |
 |------|--------------|----------|------------|
-| Mine Official (GM) | `EIS-90214432` | `password123` | SECL |
+| Mine Official (GM) | `ES-90214432` | `password123` | SECL |
 | Director Technical (CIL HQ) | `EIS-80012904` | `password123` | CIL HQ |
 
 ### Field Inspectors (Safety Officers)

@@ -7,9 +7,7 @@ export const config = {
 
   nodeEnv: process.env.NODE_ENV || "development",
 
-  mongoUri:
-    process.env.MONGODB_URI ||
-    "mongodb://localhost:27017/khanandrishti",
+mongoUri: process.env.MONGODB_URI,
 
   corsOrigin:
     process.env.CORS_ORIGIN ||
