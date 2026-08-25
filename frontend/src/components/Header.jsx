@@ -2,10 +2,7 @@ import React, { useState } from "react";
 
 import { MOCK_USER_PERSONAS } from "../data/mockUsers";
 import {
-
-
   HardHat,
-
   Wifi,
   WifiOff,
   MapPin,
@@ -13,33 +10,12 @@ import {
   Bot,
   Users,
   GitCommit,
-  Server,
   Layers,
   LogOut,
   ChevronDown,
   UserCheck,
-
-
   CheckCircle2 } from
 "lucide-react";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export const Header = ({
   currentUser,
@@ -83,19 +59,18 @@ export const Header = ({
   };
 
   const allNavTabs = [
-  { id: "command_hub", label: "Central Command", icon: Layers },
-  { id: "gis_map", label: "GIS Spatial Map", icon: MapPin },
-  { id: "field_inspection", label: "Field Inspection", icon: HardHat, badge: offlineQueueCount > 0 ? `${offlineQueueCount}` : undefined },
-  { id: "statutory_registers", label: "Statutory Registers", icon: FileText },
-  { id: "ai_sentinel", label: "AI Sentinel & OCR", icon: Bot, isNew: true },
-  { id: "contractor_labour", label: "Contractor & Form-B", icon: Users },
-  { id: "workflow_audit", label: "CAPA & Audit Trail", icon: GitCommit }]
-  
+    { id: "command_hub", label: "Central Command", icon: Layers },
+    { id: "gis_map", label: "GIS Spatial Map", icon: MapPin },
+    { id: "field_inspection", label: "Field Inspection", icon: HardHat, badge: offlineQueueCount > 0 ? `${offlineQueueCount}` : undefined },
+    { id: "statutory_registers", label: "Statutory Registers", icon: FileText },
+    { id: "ai_sentinel", label: "AI Sentinel & OCR", icon: Bot, isNew: true },
+    { id: "contractor_labour", label: "Contractor & Form-B", icon: Users },
+    { id: "workflow_audit", label: "CAPA & Audit Trail", icon: GitCommit }
+  ];
 
   const navTabs = currentRole === "safety_officer" 
     ? allNavTabs.filter(tab => ["gis_map", "field_inspection"].includes(tab.id))
     : allNavTabs;
-
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-xs">
@@ -128,7 +103,6 @@ export const Header = ({
                 <Wifi className="w-3 h-3 text-emerald-600" />
                 <span>Sync: Active</span>
               </> :
-
             <>
                 <WifiOff className="w-3 h-3 text-red-600" />
                 <span>Offline ({offlineQueueCount} queued)</span>
@@ -267,17 +241,15 @@ export const Header = ({
                     </div>
                   </div>
 
-                  {/* Removed mock persona switcher */}
-
                   {/* Logout Button */}
                   <div className="pt-2 border-t border-slate-100">
                     <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      onLogout();
-                    }}
-                    className="w-full flex items-center justify-center space-x-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 py-2 rounded-lg text-xs font-mono font-semibold transition-colors cursor-pointer">
-                    
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        onLogout();
+                      }}
+                      className="w-full flex items-center justify-center space-x-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 py-2 rounded-lg text-xs font-mono font-semibold transition-colors cursor-pointer">
+                      
                       <LogOut className="w-3.5 h-3.5 text-red-600" />
                       <span>Log Out to Statutory Login Gateway</span>
                     </button>
@@ -318,10 +290,9 @@ export const Header = ({
                   </span>
                 }
               </button>);
-
           })}
         </nav>
       </div>
-    </header>);
-
+    </header>
+  );
 };
