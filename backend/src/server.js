@@ -23,10 +23,7 @@ app.use(cookieParser());
 
 
 app.get("/", (req, res) => {
-  res.json({
-    message: "KhananDrishti Backend is running!",
-    status: "ok",
-  });
+  res.send("ROOT ROUTE FROM NEW DEPLOYMENT WORKS");
 });
 
 
