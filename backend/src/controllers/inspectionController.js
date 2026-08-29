@@ -1,8 +1,6 @@
 import { Inspection } from "../models/Inspection.js";
 
-// @desc    Create a new inspection
-// @route   POST /api/inspections
-// @access  Private (safety_officer)
+
 export const createInspection = async (req, res) => {
   try {
     const inspectionData = req.body;
@@ -12,6 +10,12 @@ export const createInspection = async (req, res) => {
     // Map frontend 'id' to backend 'inspectionId' if present
     if (inspectionData.id) {
       inspectionData.inspectionId = inspectionData.id;
+    }
+
+    // The frontend sends benchOrLevel nested inside geoTag,
+    // but the schema requires it as a top-level field. Normalize it here.
+    if (!inspectionData.benchOrLevel && inspectionData.geoTag?.benchOrLevel) {
+      inspectionData.benchOrLevel = inspectionData.geoTag.benchOrLevel;
     }
 
     const inspection = await Inspection.create(inspectionData);
